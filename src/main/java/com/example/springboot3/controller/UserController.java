@@ -1,84 +1,89 @@
 package com.example.springboot3.controller;
 
-import com.example.springboot3.service.RoleService;
-import com.example.springboot3.service.UserService;
+import com.example.springboot3.service.RoleServiceImpl;
+import com.example.springboot3.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.example.springboot3.entity.Role;
 import com.example.springboot3.entity.User;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Controller
 public class UserController {
+    private final UserServiceImpl userServiceImpl;
+    private final RoleServiceImpl roleServiceImpl;
     @Autowired
-    private UserService userService;
-    @Autowired
-    private RoleService roleService;
+    public UserController(RoleServiceImpl roleServiceImpl, UserServiceImpl userServiceImpl) {
+        this.roleServiceImpl = roleServiceImpl;
+        this.userServiceImpl = userServiceImpl;
+    }
 
 
-    @GetMapping(value = "/user")
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
     public String userInfo(@AuthenticationPrincipal User user, Model model){
         model.addAttribute("user", user);
         model.addAttribute("roles", user.getRoles());
         return "userpage";
     }
 
-    @GetMapping(value = "/admin")
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public String listUsers(Model model) {
-        model.addAttribute("allUsers", userService.getAllUsers());
+        model.addAttribute("allUsers", userServiceImpl.getAllUsers());
         return "all-user";
     }
 
-    @GetMapping(value = "/admin/new")
+    @RequestMapping(value = "/admin/new", method = RequestMethod.GET)
     public String newUser(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("roles", roleService.getAllRoles());
+        model.addAttribute("roles", roleServiceImpl.getAllRoles());
         return "info";
     }
 
-    @PostMapping(value = "/admin/add-user")
+    @RequestMapping(value = "/admin/add-user", method = RequestMethod.POST)
     public String addUser(@ModelAttribute User user, @RequestParam(value = "checkBoxRoles") String[] checkBoxRoles) {
         Set<Role> roleSet = new HashSet<>();
         for (String role : checkBoxRoles) {
-            roleSet.add(roleService.getRoleByName(role));
+            roleSet.add(roleServiceImpl.getRoleByName(role));
         }
         user.setRoles(roleSet);
-        userService.addUser(user);
+        userServiceImpl.addUser(user);
         return "redirect:/admin";
     }
 
-    @GetMapping(value = "/{id}/edit")
+    @RequestMapping(value = "/{id}/edit", method = RequestMethod.GET)
     public String editUserForm(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", userService.getUserById(id));
-        model.addAttribute("roles", roleService.getAllRoles());
+        model.addAttribute("user", userServiceImpl.getUserById(id));
+        model.addAttribute("roles", roleServiceImpl.getAllRoles());
         return "edit";
     }
 
-    @PatchMapping(value = "/{id}")
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public String editUser(@ModelAttribute User user, @RequestParam(value = "checkBoxRoles") String[] checkBoxRoles) {
         Set<Role> roleSet = new HashSet<>();
         for (String roles : checkBoxRoles) {
-            roleSet.add(roleService.getRoleByName(roles));
+            roleSet.add(roleServiceImpl.getRoleByName(roles));
         }
         user.setRoles(roleSet);
-        userService.updateUser(user);
+        userServiceImpl.updateUser(user);
         return "redirect:/admin";
     }
 
-    @DeleteMapping(value = "/remove/{id}")
+    @RequestMapping(value = "/remove/{id}", method = RequestMethod.DELETE)
     public String removeUser(@PathVariable("id") long id) {
-        userService.removeUserById(id);
+        userServiceImpl.removeUserById(id);
         return "redirect:/admin";
     }
 
-    @GetMapping(value ="/login")
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(){
         return "login";
     }

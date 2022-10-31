@@ -1,4 +1,4 @@
-package com.example.springboot3.handler;
+package com.example.springboot3.security.handler;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
