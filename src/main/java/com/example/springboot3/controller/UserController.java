@@ -51,9 +51,7 @@ public class UserController {
     @RequestMapping(value = "/admin/add-user", method = RequestMethod.POST)
     public String addUser(@ModelAttribute User user, @RequestParam(value = "checkBoxRoles") String[] checkBoxRoles) {
         Set<Role> roleSet = new HashSet<>();
-        for (String role : checkBoxRoles) {
-            roleSet.add(roleServiceImpl.getRoleByName(role));
-        }
+        roleServiceImpl.checkBoxRole(checkBoxRoles);
         user.setRoles(roleSet);
         userServiceImpl.addUser(user);
         return "redirect:/admin";
@@ -69,9 +67,7 @@ public class UserController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public String editUser(@ModelAttribute User user, @RequestParam(value = "checkBoxRoles") String[] checkBoxRoles) {
         Set<Role> roleSet = new HashSet<>();
-        for (String roles : checkBoxRoles) {
-            roleSet.add(roleServiceImpl.getRoleByName(roles));
-        }
+        roleServiceImpl.checkBoxRole(checkBoxRoles);
         user.setRoles(roleSet);
         userServiceImpl.updateUser(user);
         return "redirect:/admin";

@@ -1,35 +1,43 @@
 package com.example.springboot3.service;
 
+import com.example.springboot3.dao.RoleDao;
 import com.example.springboot3.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.springboot3.dao.RoleRepository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
-public class RoleServiceImpl {
-    private RoleRepository roleRepository;
+public class RoleServiceImpl implements RoleService {
+    private RoleDao roleDao;
     @Autowired
-    public void RoleService(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;;
+    public void RoleService(RoleDao roleDao) {
+        this.roleDao = roleDao;
+    }
+    public void checkBoxRole(String[] checkBoxRoles){
+        Set<Role> roleSet = new HashSet<>();
+        for (String role : checkBoxRoles) {
+            roleSet.add(getRoleByName(role));
+        }
     }
 
     public void addRole(Role role) {
-        roleRepository.save(role);
+        roleDao.addRole(role);
     }
 
     public void updateRole(Role role) {
-        roleRepository.saveAndFlush(role);
+        roleDao.updateRole(role);
     }
 
-    public void removeRoleById(long id) { roleRepository.deleteById(id); }
+    public void removeRoleById(long id) { roleDao.removeRoleById(id); }
 
     public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+        return roleDao.getAllRoles();
     }
 
-    public Role getRoleByName(String name) { return roleRepository.findByname(name); }
+    public Role getRoleByName(String name) { return roleDao.getRoleByName(name); }
 }

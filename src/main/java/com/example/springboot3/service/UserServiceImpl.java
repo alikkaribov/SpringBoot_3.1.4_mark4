@@ -1,8 +1,9 @@
 package com.example.springboot3.service;
 
 
-import com.example.springboot3.dao.UserRepository;
+import com.example.springboot3.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,21 +11,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import com.example.springboot3.entity.User;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class UserServiceImpl implements UserDetailsService {
-    private final UserRepository userRepository;
+@Transactional
+public class UserServiceImpl implements UserService, UserDetailsService {
+    private final UserDao userDao;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.userRepository = userRepository;
+    @Lazy
+    public UserServiceImpl(UserDao userDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userDao = userDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public void addUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        userDao.addUser(user);
     }
 
     public void updateUser(User user) {
@@ -33,18 +37,18 @@ public class UserServiceImpl implements UserDetailsService {
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
-        userRepository.save(user);
+        userDao.updateUser(user);
     }
 
     public void removeUserById(long id) {
-        userRepository.deleteById(id);
+        userDao.removeUserById(id);
     }
-    public User getUserById(long id) { return userRepository.findById(id).get(); }
+    public User getUserById(long id) { return userDao.getUserById(id); }
 
-    public List<User> getAllUsers() { return userRepository.findAll(); }
+    public List<User> getAllUsers() { return userDao.getAllUsers(); }
 
     public User getUserByName(String username) {
-        return userRepository.findByusername(username);
+        return userDao.getUserByName(username);
     }
 
     @Override
