@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@Transactional
 public class RoleServiceImpl implements RoleService {
     private RoleDao roleDao;
     @Autowired
@@ -24,20 +23,20 @@ public class RoleServiceImpl implements RoleService {
             roleSet.add(getRoleByName(role));
         }
     }
-
+    @Transactional
     public void addRole(Role role) {
         roleDao.addRole(role);
     }
-
+    @Transactional
     public void updateRole(Role role) {
         roleDao.updateRole(role);
     }
-
+    @Transactional
     public void removeRoleById(long id) { roleDao.removeRoleById(id); }
-
+    @Transactional
     public List<Role> getAllRoles() {
         return roleDao.getAllRoles();
     }
-
+    @Transactional
     public Role getRoleByName(String name) { return roleDao.getRoleByName(name); }
 }

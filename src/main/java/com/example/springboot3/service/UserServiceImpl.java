@@ -14,23 +14,21 @@ import com.example.springboot3.entity.User;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserDao userDao;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    @Lazy
-    public UserServiceImpl(UserDao userDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserServiceImpl(UserDao userDao, @Lazy BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userDao = userDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
-
+    @Transactional
     public void addUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userDao.addUser(user);
     }
-
+    @Transactional
     public void updateUser(User user) {
         if (user.getPassword().equals(getUserById(user.getId()).getPassword())) {
             user.setPassword(getUserById(user.getId()).getPassword());
@@ -39,14 +37,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         userDao.updateUser(user);
     }
-
+    @Transactional
     public void removeUserById(long id) {
         userDao.removeUserById(id);
     }
+    @Transactional
     public User getUserById(long id) { return userDao.getUserById(id); }
-
+    @Transactional
     public List<User> getAllUsers() { return userDao.getAllUsers(); }
-
+    @Transactional
     public User getUserByName(String username) {
         return userDao.getUserByName(username);
     }
