@@ -9,9 +9,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+
 import com.example.springboot3.entity.User;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -23,12 +26,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.userDao = userDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
+
     @Transactional
     public void addUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userDao.addUser(user);
     }
-    @Transactional
+
     public void updateUser(User user) {
         if (user.getPassword().equals(getUserById(user.getId()).getPassword())) {
             user.setPassword(getUserById(user.getId()).getPassword());
@@ -37,14 +41,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         userDao.updateUser(user);
     }
+
     @Transactional
     public void removeUserById(long id) {
         userDao.removeUserById(id);
     }
+
     @Transactional
-    public User getUserById(long id) { return userDao.getUserById(id); }
+    public User getUserById(long id) {
+        return userDao.getUserById(id);
+    }
+
     @Transactional
-    public List<User> getAllUsers() { return userDao.getAllUsers(); }
+    public List<User> getAllUsers() {
+        return userDao.getAllUsers();
+    }
+
     @Transactional
     public User getUserByName(String username) {
         return userDao.getUserByName(username);

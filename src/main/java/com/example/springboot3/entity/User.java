@@ -2,12 +2,13 @@ package com.example.springboot3.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
 
 @Entity
-@Table(name="user")
+@Table(name = "user")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,7 +21,7 @@ public class User implements UserDetails {
     private String email;
     @Column(name = "password")
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     public User(String username, String lastname, String email, String password, Set<Role> roles) {
@@ -31,7 +32,8 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public User() { }
+    public User() {
+    }
 
     public String getLastname() {
         return lastname;

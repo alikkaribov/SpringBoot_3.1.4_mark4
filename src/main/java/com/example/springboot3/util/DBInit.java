@@ -17,12 +17,14 @@ public class DBInit {
     private final RoleService roleService;
     private final UserService userService;
     final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
     public DBInit(RoleService roleService, UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.roleService = roleService;
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
+
     @PostConstruct
     private void postConstruct() {
         Role adminRole = new Role("ROLE_ADMIN");
@@ -36,7 +38,7 @@ public class DBInit {
         Set<Role> roles_user = new HashSet<>();
         roles_user.add(roleService.getRoleByName("ROLE_USER"));
         User user = new User("user", "user",
-                "user@user.ru", "1234",  roles_user);
+                "user@user.ru", "1234", roles_user);
         userService.addUser(user);
     }
 }

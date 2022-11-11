@@ -15,7 +15,7 @@ public class RoleDaoImpl implements RoleDao {
 
     public void addRole(Role role) {
         String str = role.getName();
-        if(!(getAllRoles().contains(str))){
+        if (!(getAllRoles().contains(str))) {
             entityManager.persist(role);
         }
     }

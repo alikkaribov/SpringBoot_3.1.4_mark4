@@ -15,10 +15,12 @@ import com.example.springboot3.security.handler.LoginSuccessHandler;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserServiceImpl userServiceImpl;
+
     @Autowired
     public SecurityConfig(UserServiceImpl userServiceImpl) {
         this.userServiceImpl = userServiceImpl;
     }
+
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userServiceImpl).passwordEncoder(bCryptPasswordEncoder());
@@ -27,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers( "/login", "/logout").permitAll()
+                .antMatchers("/login", "/logout").permitAll()
                 .antMatchers("/user/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
                 .antMatchers("/admin/**").access("hasAnyRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
